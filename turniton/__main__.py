@@ -2,10 +2,11 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 
-from turniton.data import load_data
+import turniton.data as tiod
 
 def main():
-    data = load_data("data/Gole")
+    data = tiod.get_data("data/1.csv")
+    tiod.print_data(data)
 
 
 
