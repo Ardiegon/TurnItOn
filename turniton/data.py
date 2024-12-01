@@ -1,7 +1,9 @@
+import os
+import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from pathlib import Path
 
+from pathlib import Path
 
 import turniton.utils as tiou
 
@@ -16,11 +18,14 @@ def preprocess_csv(csv: pd.DataFrame)->pd.DataFrame:
                    "location_altitudeAboveMeanSeaLevel","location_bearing",
                    "location_horizontalAccuracy","location_verticalAccuracy",
                    "location_longitude","location_speed"]
-    csv[nan_columns] = csv[nan_columns].interpolate("linear")
 
-    diff_columns = [x for x in csv.columns if x not in nan_columns or x in ["location_latitude", "location_longitude"]]
-    for d in diff_columns:
+    new_names = [f"{name}_filled" for name in nan_columns]
+    csv[new_names] = csv[nan_columns].interpolate(method="linear", axis=0)
+
+    interesting_cols = [x for x in csv.columns if x not in nan_columns]
+    for d in interesting_cols:
         csv[f"{d}_diff"] = csv[d].diff()
+        csv[f"{d}_filtered"] = csv[d].rolling(70).median()
 
     return csv
 
@@ -36,3 +41,11 @@ def visualisation(data:pd.DataFrame, columns:list, title:str = "visualization", 
         data[columns].plot()
     plt.title(title)
     plt.savefig(path)
+
+def clear_visualisations()->None:   
+    folder_path = Path(f"visualisations")
+    for file_name in os.listdir(folder_path):
+        if file_name.endswith(".png"):
+            file_path = os.path.join(folder_path, file_name)
+            os.remove(file_path)
+
