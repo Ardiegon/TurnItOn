@@ -14,7 +14,7 @@ def map_it(data, x_y_names: list, title="Map", color_column=None, threshold=None
     data.plot(x=x_y_names[0], y=x_y_names[1], ax=ax, c="black")
 
     if threshold is not None and color_column is not None:
-        data = data[data[color_column] < threshold]
+        data = data[data[color_column] > threshold]
 
     with open('data/jk_map.pickle', 'rb') as handle:
         map = pickle.load(handle)

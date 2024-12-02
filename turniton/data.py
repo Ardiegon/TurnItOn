@@ -31,7 +31,7 @@ def preprocess_csv(csv: pd.DataFrame)->pd.DataFrame:
 
     data = csv[["accelerometer_z_filtered","accelerometer_y_filtered","accelerometer_x_filtered"]]
     csv["summed_acc"] = -data.sum(axis=1, skipna=True)
-    csv["stop_only"] = -csv["accelerometer_y_filtered"].where(csv["accelerometer_y_filtered"] > 0, other=0)
+    csv["stop_only"] = csv["accelerometer_y_filtered"].where(csv["accelerometer_y_filtered"] > 0, other=0)
     # csv["acc"] = -data["accelerometer_y_filtered"]
     # csv["acc.combined"] = csv["acc"] * np.abs(csv["accelerometer_x_filtered"])
 
