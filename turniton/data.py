@@ -10,9 +10,15 @@ import turniton.utils as tiou
 def get_data(path:str)->pd.DataFrame:
     csv = pd.read_csv(path)
     data = preprocess_csv(csv)
+    data = add_turn_column(data)
     return data
 
-def preprocess_csv(csv: pd.DataFrame)->pd.DataFrame:
+def preprocess_csv(input: pd.DataFrame)->pd.DataFrame:
+    # Ignore first and last measurements
+    index = input.iloc[400:-150].index
+    csv = input.loc[index]
+
+
     # Interpolate in NaN columns
     nan_columns = ["location_altitude","location_speedAccuracy",
                    "location_bearingAccuracy","location_latitude",
@@ -32,11 +38,15 @@ def preprocess_csv(csv: pd.DataFrame)->pd.DataFrame:
     data = csv[["accelerometer_z_filtered","accelerometer_y_filtered","accelerometer_x_filtered"]]
     csv["summed_acc"] = -data.sum(axis=1, skipna=True)
     csv["stop_only"] = csv["accelerometer_y_filtered"].where(csv["accelerometer_y_filtered"] > 0, other=0)
-    # csv["acc"] = -data["accelerometer_y_filtered"]
-    # csv["acc.combined"] = csv["acc"] * np.abs(csv["accelerometer_x_filtered"])
-
-
     return csv
+
+def add_turn_column(data: pd.DataFrame, window_size:int = 10)->pd.DataFrame:
+    orientation = data[["orientation_qy_filtered"]]
+    diff = orientation.rolling(window_size).apply(lambda s: s.iloc[0] - s.iloc[-1])
+    result = diff
+    data["turn"] = result
+    return data
+
 
 def explain_data(data: pd.DataFrame)->None:
     data.info()

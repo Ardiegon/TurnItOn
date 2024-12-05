@@ -7,14 +7,23 @@ from pathlib import Path
 
 import turniton.utils as tiou
 
-def map_it(data, x_y_names: list, title="Map", color_column=None, threshold=None):
+
+
+def map_it(data, x_y_names: list, title="Map", color_column:str=None, threshold:float=None, threshold_type:str = "above"):
     path = Path(f"visualisations/{title}_{tiou.get_unique_tag()}")
 
     fig, ax = plt.subplots(figsize=(10, 10))
     data.plot(x=x_y_names[0], y=x_y_names[1], ax=ax, c="black")
 
     if threshold is not None and color_column is not None:
-        data = data[data[color_column] > threshold]
+        if threshold_type == "above":
+            data = data[data[color_column] > threshold]
+        elif threshold_type == "below":
+            data = data[data[color_column] < -threshold]
+        elif threshold_type == "abs":
+            data = data[(data[color_column] > threshold) | (data[color_column] < -threshold)]
+        else:
+            raise "threshold type can be only 'above', 'below', or 'abs'"
 
     with open('data/jk_map.pickle', 'rb') as handle:
         map = pickle.load(handle)
