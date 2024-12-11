@@ -31,8 +31,6 @@ def main(opts):
     tiod.visualisation(data, ["orientation_qy"], "Orient_q")
     tiod.visualisation(data, ["orientation_qy_filtered"], "Orient_q_filt")
 
-
-
     # Geo Stuff
     tiod.visualisation(data, ["location_longitude_filled"], "Long")
     tiod.visualisation(data, ["location_longitude_filled_filtered"], "Long_filtered")
@@ -44,13 +42,11 @@ def main(opts):
     tiom.map_it(data, ["location_longitude_filled", "location_latitude_filled"], "Map_Unf", color_column=opts.color_column, threshold=opts.threshold, threshold_type=opts.threshold_type)
 
 def test():
-    data = tiod.get_data("data/1.csv")
-    print(data["location_altitude"])
-    print(data["location_altitude"].ffill())
-
+    data = pd.read_csv("data/1.csv")
+    print(data.describe().to_csv("here.csv"))
 
 if __name__=="__main__":
     opts = parse_args()
-    main(opts)
-    # test()
+    # main(opts)
+    test()
 

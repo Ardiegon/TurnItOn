@@ -15,8 +15,9 @@ def get_data(path:str)->pd.DataFrame:
 
 def preprocess_csv(input: pd.DataFrame)->pd.DataFrame:
     # Ignore first and last measurements
-    index = input.iloc[400:-150].index
-    csv = input.loc[index]
+    # index = input.iloc[400:-150].index
+    # csv = input.loc[index]
+    csv = input
 
 
     # Interpolate in NaN columns
@@ -42,11 +43,20 @@ def preprocess_csv(input: pd.DataFrame)->pd.DataFrame:
 
 def add_turn_column(data: pd.DataFrame, window_size:int = 10)->pd.DataFrame:
     orientation = data[["orientation_qy_filtered"]]
-    diff = orientation.rolling(window_size).apply(lambda s: s.iloc[0] - s.iloc[-1])
+
+    def cyclic_difference_simple(a, b):
+        res = a-b
+        if res > 1:
+            res -= 1
+        elif res < -1:
+            res+= 1
+        return res
+
+
+    diff = orientation.rolling(window_size).apply(lambda s: cyclic_difference_simple(s.iloc[0], s.iloc[-1]))
     result = diff
     data["turn"] = result
     return data
-
 
 def explain_data(data: pd.DataFrame)->None:
     data.info()
