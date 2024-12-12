@@ -12,7 +12,11 @@ authors = [
 license = { file = "LICENSE" }
 dependencies = [
     "pandas",
-    "geopandas"
+    "geopandas",
+    "matplotlib",
+    "osmnx",
+    "ipykernel",
+    "contextily"
 ]
 readme = "README.md"
 requires-python = ">=3.10"
