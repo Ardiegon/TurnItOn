@@ -12,6 +12,7 @@ def parse_args():
     parser.add_argument("-c", "--color-column", default=None, help="Which column should be used to colour points on map")
     parser.add_argument("-t", "--threshold", type=float, default=None, help="Above this value points on scatter are opaque")
     parser.add_argument("-p", "--threshold-type", type=str, default="above", help="above, below, or abs")
+    parser.add_argument("-m", "--map-id", type=int, default=1, help="which map")
     return parser.parse_args()
 
 def main(opts):
@@ -28,6 +29,7 @@ def main(opts):
     tiod.visualisation(data, ["compass_magneticBearing_filtered"], "Compass")
     tiod.visualisation(data, ["gyroscopeUncalibrated_y"], "Gyr_unc")
     tiod.visualisation(data, ["gyroscopeUncalibrated_y_filtered"], "Gyr_unc_filt")
+    tiod.visualisation(data, ["turn"], "Gyr_turn")
     tiod.visualisation(data, ["orientation_qy"], "Orient_q")
     tiod.visualisation(data, ["orientation_qy_filtered"], "Orient_q_filt")
 
@@ -38,15 +40,15 @@ def main(opts):
     tiod.visualisation(data, ["location_longitude_filled_filtered", "location_latitude_filled_filtered"], "GPS_filtered", correlation=True)
     
     # Maps
-    tiom.map_it(data, ["location_longitude_filled_filtered", "location_latitude_filled_filtered"], "Map", color_column=opts.color_column, threshold=opts.threshold, threshold_type=opts.threshold_type)
-    tiom.map_it(data, ["location_longitude_filled", "location_latitude_filled"], "Map_Unf", color_column=opts.color_column, threshold=opts.threshold, threshold_type=opts.threshold_type)
+    tiom.map_it(data, ["location_longitude_filled_filtered", "location_latitude_filled_filtered"], "Map", color_column=opts.color_column, threshold=opts.threshold, threshold_type=opts.threshold_type, map_id=opts.map_id)
+    tiom.map_it(data, ["location_longitude_filled", "location_latitude_filled"], "Map_Unf", color_column=opts.color_column, threshold=opts.threshold, threshold_type=opts.threshold_type, map_id=opts.map_id)
 
 def test():
-    data = pd.read_csv("data/1.csv")
-    print(data.describe().to_csv("here.csv"))
+    data = pd.read_csv("data/4.csv")
+    print(data[["location_latitude","location_longitude"]].describe())
 
 if __name__=="__main__":
     opts = parse_args()
-    # main(opts)
-    test()
+    main(opts)
+    # test()
 

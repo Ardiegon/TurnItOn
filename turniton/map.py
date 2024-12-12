@@ -9,7 +9,7 @@ import turniton.utils as tiou
 
 
 
-def map_it(data, x_y_names: list, title="Map", color_column:str=None, threshold:float=None, threshold_type:str = "above"):
+def map_it(data, x_y_names: list, title="Map", color_column:str=None, threshold:float=None, threshold_type:str = "above", map_id: int = 1):
     path = Path(f"visualisations/{title}_{tiou.get_unique_tag()}")
 
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -25,7 +25,7 @@ def map_it(data, x_y_names: list, title="Map", color_column:str=None, threshold:
         else:
             raise "threshold type can be only 'above', 'below', or 'abs'"
 
-    with open('data/jk_map.pickle', 'rb') as handle:
+    with open(f'data/jk_map_{map_id}.pickle', 'rb') as handle:
         map = pickle.load(handle)
 
     if color_column is None:

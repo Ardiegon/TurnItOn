@@ -15,9 +15,9 @@ def get_data(path:str)->pd.DataFrame:
 
 def preprocess_csv(input: pd.DataFrame)->pd.DataFrame:
     # Ignore first and last measurements
-    # index = input.iloc[400:-150].index
-    # csv = input.loc[index]
-    csv = input
+    index = input.iloc[200:-300].index
+    csv = input.loc[index]
+    # csv = input
 
 
     # Interpolate in NaN columns
